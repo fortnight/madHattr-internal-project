@@ -1,0 +1,164 @@
+---
+swagger: "2.0"
+info:
+  title: MadHattr
+  version: 1.0.0
+  description: A basic api to demonstrate CRUD operations.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /hats/{hatId}:
+    get:
+      parameters:
+      - name: hatId
+        description: A unique identifier for a `Hat`.
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Successful response - returns a single `Hat`.
+          schema:
+            $ref: '#/definitions/hat'
+      operationId: getHat
+      summary: Get a Hat
+      description: Gets the details of a single instance of a `Hat`.
+    put:
+      parameters:
+      - name: body
+        description: Updated `Hat` information.
+        schema:
+          $ref: '#/definitions/hat'
+        in: body
+        required: true
+      - name: hatId
+        description: A unique identifier for a `Hat`.
+        in: path
+        required: true
+        type: string
+      responses:
+        "202":
+          description: Hat object properly updated.
+      operationId: updateHat
+      summary: Update a Hat
+      description: Updates an existing `Hat`.
+    delete:
+      responses:
+        "204":
+          description: Successful response.
+      operationId: deleteHat
+      summary: Delete a Hat
+      description: Deletes an existing `Hat`.
+    parameters:
+    - name: hatId
+      description: A unique identifier for a `Hat`.
+      in: path
+      required: true
+      type: string
+  /hats:
+    get:
+      responses:
+        "200":
+          description: Successful response - returns an array of `Hat` entities.
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/hat'
+      operationId: getHats
+      summary: List All Hats
+      description: Gets a list of all `Hat` entities.
+    post:
+      parameters:
+      - name: body
+        description: A new `newHat` to be created. Ids will be generated and added
+          to allow newHat to become a Hat object.
+        schema:
+          $ref: '#/definitions/newHat'
+        in: body
+        required: true
+      responses:
+        "201":
+          description: Successful response.
+      operationId: createNewHat
+      summary: Create a newHat
+      description: Creates a new instance of a `newHat`.
+definitions:
+  newHat:
+    description: A new hat object to be created by post call. Id will be generated
+      and enriched to create Hat object.
+    required:
+    - color
+    - type
+    type: object
+    properties:
+      color:
+        description: The color of the new hat
+        enum:
+        - RED
+        - ORANGE
+        - YELLOW
+        - GREEN
+        - BLUE
+        - PURPLE
+        - WHITE
+        - BLACK
+        - GRAY
+        - BROWN
+        type: string
+      description:
+        description: The description of the new hat object.
+        type: string
+      type:
+        description: The type of new hat object.
+        type: string
+    example:
+      color: RED
+      type: Fedora
+      description: Just a classic Red Hat hat.
+  hat:
+    title: Root Type for hat
+    description: The basic Hat object, inheriting new Hat and enriched with an integer
+      Id.
+    type: object
+    allOf:
+    - required:
+      - color
+      - id
+      - type
+      type: object
+      properties:
+        color:
+          description: The color of the Hat
+          enum:
+          - RED
+          - ORANGE
+          - YELLOW
+          - GREEN
+          - BLUE
+          - PURPLE
+          - WHITE
+          - BLACK
+          - GRAY
+          - BROWN
+          type: string
+        type:
+          description: The type of Hat
+          type: string
+        description:
+          description: The description of the Hat
+          type: string
+        id:
+          format: int32
+          description: An integer value assigned to the hat as it enters the database
+          type: integer
+    - $ref: '#/definitions/newHat'
+    example:
+      color: RED
+      type: Fedora
+      description: Just a classic Red Hat hat.
+      id: 0
